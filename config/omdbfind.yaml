@@ -1,0 +1,52 @@
+# Application configuration file, used in read-only mode on initialization.
+# Any parameters can be rewritten by command line.
+
+# maximum run time of the application.
+# Format is a time.Duration string (for example '1d8h15m30s')
+# 0 means unlimited by time searching.
+maxRunTime: 0s
+# maximum number of requests to send to omdbapi.
+# 0 means no limits for requests number on each founded entry.
+maxRequests: 0
+# determines how many database lines to process between
+# two check ups for exit by timeout or app termination.
+# It prevents checking overflow.
+line-granulation: 10
+# OMDb service API calls configuration.
+OMDb-param:
+  # host of OMDb API service.
+  OMDb-host: http://omdbapi.com
+  # key for API requests to OMDb service.
+  API-key: 124978f0
+  # relative path to the inflated title.basics.tsv.gz file.
+  filePath: data-cuted.tsv
+  # number of threads to send queries to service.
+  threads-num: 2
+# default predefined search parameters that can be rewritten by command line.
+search-param:
+  # filter on titleType column.
+  titleType: ""
+  # filter on primaryTitle column.
+  primaryTitle: ""
+  # filter on originalTitle column.
+  originalTitle: ""
+  # filter on genre column.
+  genre: ""
+  # filter on startYear column.
+  startYear: 0
+  # filter on endYear column.
+  endYear: 0
+  # filter on runtimeMinutes column.
+  runtimeMinutes: 0
+  # filter on genres column.
+  genres: ""
+# parameters of result tables output.
+print-param:
+  # disables print of table with founded entries in local DB, print only its number.
+  no-basic-table: false
+  # disables print of table with full description provided by OMDb service.
+  no-OMDb-table: false
+  # maximum length of title in table.
+  title-len: 32
+  # maximum length of plot in table.
+  plot-len: 120
