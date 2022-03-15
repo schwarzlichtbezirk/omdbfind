@@ -1,6 +1,6 @@
 #!/bin/bash
 cd $(dirname $0)/..
-git describe --tags > buildvers.txt # puts version to file for docker image building
+git rev-parse --short HEAD > buildvers.txt # puts version to file for docker image building
 buildvers=`cat buildvers.txt`
 builddate=$(date +%F)
 mkdir -pv $GOPATH/bin/config

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"encoding/csv"
+	"bufio"
 	"fmt"
 	"io"
 	"log"
@@ -62,39 +62,40 @@ func (e *BasicEntry) Parse(record []string) {
 	e.Genres = record[ci_genres]
 }
 
-func (e *BasicEntry) Compare(v *BasicEntry) bool {
-	if e.TitleType != "" {
-		if v.TitleType != e.TitleType {
+// Compare helps to check up that BasicEntry value passes to conditions.
+func (cs *CfgSearch) Compare(v *BasicEntry) bool {
+	if cs.TitleType != "" {
+		if v.TitleType != cs.TitleType {
 			return false
 		}
 	}
-	if e.PrimaryTitle != "" {
-		if !strings.Contains(strings.ToLower(v.PrimaryTitle), strings.ToLower(e.PrimaryTitle)) {
+	if cs.PrimaryTitle != "" {
+		if !strings.Contains(strings.ToLower(v.PrimaryTitle), strings.ToLower(cs.PrimaryTitle)) {
 			return false
 		}
 	}
-	if e.OriginalTitle != "" {
-		if !strings.Contains(strings.ToLower(v.OriginalTitle), strings.ToLower(e.OriginalTitle)) {
+	if cs.OriginalTitle != "" {
+		if !strings.Contains(strings.ToLower(v.OriginalTitle), strings.ToLower(cs.OriginalTitle)) {
 			return false
 		}
 	}
-	if e.StartYear != 0 {
-		if v.StartYear != 0 && v.StartYear != e.StartYear {
+	if cs.StartYear != 0 {
+		if v.StartYear != 0 && v.StartYear != cs.StartYear {
 			return false
 		}
 	}
-	if e.EndYear != 0 {
-		if v.EndYear != 0 && v.EndYear != e.EndYear {
+	if cs.EndYear != 0 {
+		if v.EndYear != 0 && v.EndYear != cs.EndYear {
 			return false
 		}
 	}
-	if e.RuntimeMinutes != 0 {
-		if v.RuntimeMinutes != 0 && v.RuntimeMinutes != e.RuntimeMinutes {
+	if cs.RuntimeMinutes != 0 {
+		if v.RuntimeMinutes != 0 && v.RuntimeMinutes != cs.RuntimeMinutes {
 			return false
 		}
 	}
-	if e.Genres != "" {
-		var genres = strings.Split(e.Genres, ",")
+	if cs.Genres != "" {
+		var genres = strings.Split(cs.Genres, ",")
 		var isg = false
 		for _, g := range genres {
 			if strings.Contains(v.Genres, g) {
@@ -118,26 +119,28 @@ func ReadDB(dbname string) (list []BasicEntry, err error) {
 		return
 	}
 	defer f.Close()
-
-	var r = csv.NewReader(f)
-	r.Comma = '\t'
-	var record []string
+	var r = bufio.NewReader(f)
 
 	// read and skip header
-	if _, err = r.Read(); err != nil {
+	if _, err = r.ReadString('\n'); err != nil {
 		return
 	}
 
-	var line int
+	var n int
 	for {
-		if record, err = r.Read(); err == io.EOF {
+		var line string
+		if line, err = r.ReadString('\n'); err == io.EOF {
 			err = nil
 			break
 		}
 		if err != nil {
+			log.Printf("error at line: %s\n", line)
 			return
 		}
-		line++
+		n++
+
+		line = line[:len(line)-1] // remove new line symbol
+		var record = strings.Split(line, "\t")
 
 		// format entry and check it
 		var v BasicEntry
@@ -150,7 +153,7 @@ func ReadDB(dbname string) (list []BasicEntry, err error) {
 		}
 
 		// check up on break by timeout or app termination
-		if line%cfg.LineGranulation == 0 {
+		if n%cfg.LineGranulation == 0 {
 			select {
 			case <-exitctx.Done():
 				return
@@ -176,7 +179,7 @@ func PrintBasic(list []BasicEntry) {
 			if len(t) > cfg.TitleLen {
 				t = t[:cfg.TitleLen]
 			}
-			fmt.Fprintf(os.Stdout, "%9s | %-*s | %d | %s\n", v.TConst, cfg.TitleLen, t, v.StartYear, v.Genres)
+			fmt.Fprintf(os.Stdout, "%9s | %-*s | %d | %s0\n", v.TConst, cfg.TitleLen, t, v.StartYear, v.Genres)
 		}
 	}
 }

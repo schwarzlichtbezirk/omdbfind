@@ -10,9 +10,9 @@ Its contains local database with movies descriptions, receives search parameters
 2. Clone this git repo. It will be convenient if you place source code into Golang-folder by original path.
 
 ```batch
-mkdir %GOPATH%\src\github.com\schwarzlichtbezirk\omdbfind
-cd /d %GOPATH%\src\github.com\schwarzlichtbezirk\omdbfind
-git clone github.com/schwarzlichtbezirk/omdbfind
+mkdir %GOPATH%\src\github.com\schwarzlichtbezirk
+cd /d %GOPATH%\src\github.com\schwarzlichtbezirk
+git clone https://github.com/schwarzlichtbezirk/omdbfind.git
 ```
 
 3. Download the file: `title.basics.tsv.gz` from [IMDB](https://datasets.imdbws.com/) and unpack it. Place unpacked file `data.tsv` to `github.com/schwarzlichtbezirk/omdbfind/config` path.

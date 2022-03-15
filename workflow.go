@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"regexp"
 	"sync"
 	"syscall"
 	"time"
@@ -14,14 +15,19 @@ import (
 
 var (
 	// context to indicate about service shutdown
-	exitctx context.Context
-	exitfn  context.CancelFunc
+	exitctx = context.Background()
+	exitfn  = func() {}
 	// wait group for all service goroutines
 	exitwg sync.WaitGroup
 )
 
-// StartTime, EndTime - start and end time thats program really run.
-var StartTime, EndTime time.Time
+var (
+	// StartTime, EndTime - start and end time thats program really run.
+	StartTime, EndTime time.Time
+
+	// PlotRegexp is compiled regular expression with plot filter.
+	PlotRegexp *regexp.Regexp
+)
 
 // Init performs global data initialisation.
 func Init() {
@@ -57,6 +63,12 @@ func WaitExit() {
 		log.Printf("maximum %d requests to omdbapi.com\n", cfg.MaxRequests)
 	} else {
 		log.Printf("no limits on requests numbers\n")
+	}
+	if cfg.PlotFilter != "" {
+		var err error
+		if PlotRegexp, err = regexp.Compile(cfg.PlotFilter); err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	// create exit context and wait the break
@@ -120,37 +132,7 @@ func Run() {
 		default:
 		}
 
-		// get data from service for excerpted entries
-		var ll = len(list)
-		var tn = cfg.ThreadsNum
-		if tn > ll {
-			tn = ll
-		}
-		var tres = make([][]OmdbEntry, tn)
-		log.Printf("starts %d threads to OMDb service\n", tn)
-
-		var wg sync.WaitGroup
-		wg.Add(tn)
-		for i := 0; i < tn; i++ {
-			var i = i // localize
-			go func() {
-				defer wg.Done()
-				var in = ll / tn
-				var sl = in
-				if i == tn-1 {
-					sl += ll % tn
-				}
-				if tres[i], err = QueryDB(list[i*in : i*in+sl]); err != nil {
-					log.Fatal(err)
-				}
-			}()
-		}
-		wg.Wait()
-
-		var res []OmdbEntry
-		for _, ires := range tres {
-			res = append(res, ires...)
-		}
+		var res = RunPool(list)
 		PrintOmdb(res)
 	}()
 }

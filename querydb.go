@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"runtime"
+	"sync"
 )
 
 type Rating struct {
@@ -59,8 +61,18 @@ func QueryDB(list []BasicEntry) (res []OmdbEntry, err error) {
 		}
 
 		var oe OmdbEntry
-		err = json.Unmarshal(body, &oe)
-		res = append(res, oe)
+		if err = json.Unmarshal(body, &oe); err != nil {
+			return
+		}
+		oe.ImdbID = be.TConst
+
+		var add = true
+		if PlotRegexp != nil {
+			add = PlotRegexp.MatchString(oe.Plot)
+		}
+		if add {
+			res = append(res, oe)
+		}
 
 		// check up on exit
 		select {
@@ -68,6 +80,45 @@ func QueryDB(list []BasicEntry) (res []OmdbEntry, err error) {
 			return
 		default:
 		}
+	}
+	return
+}
+
+func RunPool(list []BasicEntry) (res []OmdbEntry) {
+	var err error
+
+	// get data from service for excerpted entries
+	var ll = len(list)
+	var tn = cfg.ThreadsNum
+	if tn <= 0 {
+		tn = runtime.NumCPU()
+	}
+	if tn > ll {
+		tn = ll
+	}
+	var tres = make([][]OmdbEntry, tn)
+	log.Printf("starts %d threads to OMDb service\n", tn)
+
+	var wg sync.WaitGroup
+	wg.Add(tn)
+	for i := 0; i < tn; i++ {
+		var i = i // localize
+		go func() {
+			defer wg.Done()
+			var in = ll / tn
+			var sl = in
+			if i == tn-1 {
+				sl += ll % tn
+			}
+			if tres[i], err = QueryDB(list[i*in : i*in+sl]); err != nil {
+				log.Fatal(err)
+			}
+		}()
+	}
+	wg.Wait()
+
+	for _, ires := range tres {
+		res = append(res, ires...)
 	}
 	return
 }

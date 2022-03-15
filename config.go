@@ -23,13 +23,16 @@ type CfgPrint struct {
 	PlotLen      int  `json:"plot-len" yaml:"plot-len"`
 }
 
+type CfgSearch BasicEntry
+
 // Config is all settings union.
 type Config struct {
 	MaxRunTime      time.Duration `json:"maxRunTime,omitempty" yaml:"maxRunTime,omitempty"`
 	MaxRequests     int           `json:"maxRequests,omitempty" yaml:"maxRequests,omitempty"`
 	LineGranulation int           `json:"line-granulation" yaml:"line-granulation"`
+	PlotFilter      string        `json:"plotFilter,omitempty" yaml:"plotFilter,omitempty"`
 	CfgOmdb         `json:"OMDb-param" yaml:"OMDb-param"`
-	BasicEntry      `json:"search-param" yaml:"search-param"`
+	CfgSearch       `json:"search-param" yaml:"search-param"`
 	CfgPrint        `json:"print-param" yaml:"print-param"`
 }
 
@@ -40,8 +43,9 @@ var cfg = Config{
 	LineGranulation: 10,
 	CfgOmdb: CfgOmdb{
 		OmdbHost:   "http://omdbapi.com",
+		ApiKey:     "124978f0",
 		FilePath:   "data-cuted.tsv",
-		ThreadsNum: 1,
+		ThreadsNum: 0,
 	},
 	CfgPrint: CfgPrint{
 		NoBasicTable: true,
@@ -67,10 +71,11 @@ var (
 
 // Register command line flags
 func init() {
-	flag.StringVar(&cfg.ApiKey, "apiKey", "", "key for API requests to OMDb service")
+	flag.StringVar(&cfg.ApiKey, "apiKey", "124978f0", "key for API requests to OMDb service")
 	flag.StringVar(&cfg.FilePath, "filePath", "", "absolute path to the inflated title.basics.tsv.gz file")
 	flag.DurationVar(&cfg.MaxRunTime, "maxRunTime", 0, "maximum run time of the application. Format is a time.Duration string (for example '1d8h15m30s')")
 	flag.IntVar(&cfg.MaxRequests, "maxRequests", 100, "maximum number of requests to send to omdbapi")
+	flag.StringVar(&cfg.PlotFilter, "plotFilter", "", "regex pattern to apply to the plot of a film retrieved from OMDb")
 
 	flag.StringVar(&cfg.TitleType, "titleType", "", "filter on titleType column")
 	flag.StringVar(&cfg.PrimaryTitle, "primaryTitle", "", "filter on primaryTitle column")

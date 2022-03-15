@@ -7,12 +7,13 @@ import (
 )
 
 // timeout_limit is predefined time limit of program execution.
-const timeout_limit = 1000 * time.Microsecond
+const timeout_limit = 100 * time.Millisecond
 
 // timeout_diff is maximum difference between
 // real program running timeout and given limit.
 // it should be relative to OS timer granulation.
-const timeout_diff = 5 * time.Millisecond
+// this test can fails in situation with memory swaping.
+const timeout_diff = 50 * time.Millisecond
 
 func TestTimeout(t *testing.T) {
 	cfg.FilePath = "data.tsv"

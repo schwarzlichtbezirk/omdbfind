@@ -12,6 +12,8 @@ maxRequests: 0
 # two check ups for exit by timeout or app termination.
 # It prevents checking overflow.
 line-granulation: 10
+# regex pattern to apply to the plot of a film retrieved from OMDb.
+plotFilter: ""
 # OMDb service API calls configuration.
 OMDb-param:
   # host of OMDb API service.
@@ -19,9 +21,10 @@ OMDb-param:
   # key for API requests to OMDb service.
   API-key: 124978f0
   # relative path to the inflated title.basics.tsv.gz file.
-  filePath: data-cuted.tsv
+  filePath: data.tsv
   # number of threads to send queries to service.
-  threads-num: 2
+  # 0 means to use all available logical CPUs.
+  threads-num: 0
 # default predefined search parameters that can be rewritten by command line.
 search-param:
   # filter on titleType column.

@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func do(t *testing.T, idtt []string) {
+func doBasic(t *testing.T, idtt []string) {
 	cfg.FilePath = "data-cuted.tsv"
 
 	log.Println("starts")
@@ -51,7 +51,7 @@ func TestTitle(t *testing.T) {
 	// setup search filter
 	cfg.PrimaryTitle = "watering the flowers"
 
-	do(t, []string{
+	doBasic(t, []string{
 		"tt0000035",
 	})
 }
@@ -63,7 +63,7 @@ func TestWord(t *testing.T) {
 	// setup search filter
 	cfg.PrimaryTitle = "clown"
 
-	do(t, []string{
+	doBasic(t, []string{
 		"tt0000002", "tt0000019",
 	})
 }
@@ -74,7 +74,7 @@ func TestYear(t *testing.T) {
 	// setup search filter
 	cfg.StartYear = 1894
 
-	do(t, []string{
+	doBasic(t, []string{
 		"tt0000001", "tt0000006", "tt0000007", "tt0000008", "tt0000009", "tt0000015",
 	})
 }
@@ -86,7 +86,7 @@ func TestGenre(t *testing.T) {
 	// setup search filter
 	cfg.Genres = "Comedy"
 
-	do(t, []string{
+	doBasic(t, []string{
 		"tt0000003", "tt0000005", "tt0000014", "tt0000019", "tt0000033", "tt0000035",
 	})
 }
@@ -98,7 +98,7 @@ func TestGenres(t *testing.T) {
 	// setup search filter
 	cfg.Genres = "Comedy,Drama"
 
-	do(t, []string{
+	doBasic(t, []string{
 		"tt0000003", "tt0000005", "tt0000014", "tt0000019", "tt0000033", "tt0000035", "tt0000036",
 	})
 }
@@ -109,7 +109,7 @@ func TestMix(t *testing.T) {
 	cfg.StartYear = 1894
 	cfg.Genres = "Animation,Documentary"
 
-	do(t, []string{
+	doBasic(t, []string{
 		"tt0000001", "tt0000008", "tt0000015",
 	})
 }
