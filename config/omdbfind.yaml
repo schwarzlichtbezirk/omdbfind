@@ -8,10 +8,6 @@ maxRunTime: 0s
 # maximum number of requests to send to omdbapi.
 # 0 means no limits for requests number on each founded entry.
 maxRequests: 0
-# determines how many database lines to process between
-# two check ups for exit by timeout or app termination.
-# It prevents checking overflow.
-line-granulation: 10
 # regex pattern to apply to the plot of a film retrieved from OMDb.
 plotFilter: ""
 # OMDb service API calls configuration.

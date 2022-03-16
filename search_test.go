@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"testing"
 )
@@ -26,7 +27,7 @@ func doBasic(t *testing.T, idtt []string) {
 		defer exitfn() // let's exit program on func will be complete
 
 		var err error
-		if list, err = ReadDB(cfg.FilePath); err != nil {
+		if list, err = ReadDB(context.Background(), cfg.FilePath); err != nil {
 			log.Fatal(err)
 		}
 		PrintBasic(list)

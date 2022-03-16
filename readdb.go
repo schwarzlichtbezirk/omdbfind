@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"io"
 	"log"
@@ -111,7 +112,7 @@ func (cs *CfgSearch) Compare(v *BasicEntry) bool {
 
 // ReadDB opens data base with given file name and reads it.
 // It applies given from command line filters during reading.
-func ReadDB(dbname string) (list []BasicEntry, err error) {
+func ReadDB(ctx context.Context, dbname string) (list []BasicEntry, err error) {
 	log.Printf("read file '%s'\n", dbname)
 
 	var f *os.File
@@ -153,12 +154,12 @@ func ReadDB(dbname string) (list []BasicEntry, err error) {
 		}
 
 		// check up on break by timeout or app termination
-		if n%cfg.LineGranulation == 0 {
-			select {
-			case <-exitctx.Done():
-				return
-			default:
-			}
+		select {
+		case <-ctx.Done():
+			return
+		case <-exitctx.Done():
+			return
+		default:
 		}
 	}
 
@@ -179,7 +180,7 @@ func PrintBasic(list []BasicEntry) {
 			if len(t) > cfg.TitleLen {
 				t = t[:cfg.TitleLen]
 			}
-			fmt.Fprintf(os.Stdout, "%9s | %-*s | %d | %s0\n", v.TConst, cfg.TitleLen, t, v.StartYear, v.Genres)
+			fmt.Fprintf(os.Stdout, "%9s | %-*s | %d | %s\n", v.TConst, cfg.TitleLen, t, v.StartYear, v.Genres)
 		}
 	}
 }

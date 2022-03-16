@@ -29,7 +29,7 @@ Command line parameters:
 
 ```txt
   -apiKey string
-        key for API requests to OMDb service
+        key for API requests to OMDb service (default "124978f0")
   -endYear int
         filter on endYear column
   -filePath string
@@ -44,6 +44,8 @@ Command line parameters:
         maximum run time of the application. Format is a time.Duration string (for example '1d8h15m30s')
   -originalTitle string
         filter on originalTitle column
+  -plotFilter string
+        regex pattern to apply to the plot of a film retrieved from OMDb
   -primaryTitle string
         filter on primaryTitle column
   -runtimeMinutes int

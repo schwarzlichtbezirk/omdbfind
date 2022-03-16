@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -46,7 +47,7 @@ type OmdbEntry struct {
 
 // QueryDB is gets data for each entry step by step.
 // Its a part of multithreaded pipeline.
-func QueryDB(list []BasicEntry) (res []OmdbEntry, err error) {
+func QueryDB(ctx context.Context, list []BasicEntry) (res []OmdbEntry, err error) {
 	for _, be := range list {
 		var requri = fmt.Sprintf("%s/?i=%s&apikey=%s", cfg.OmdbHost, be.TConst, cfg.ApiKey)
 		var resp *http.Response
@@ -76,6 +77,8 @@ func QueryDB(list []BasicEntry) (res []OmdbEntry, err error) {
 
 		// check up on exit
 		select {
+		case <-ctx.Done():
+			return
 		case <-exitctx.Done():
 			return
 		default:
@@ -84,10 +87,9 @@ func QueryDB(list []BasicEntry) (res []OmdbEntry, err error) {
 	return
 }
 
-func RunPool(list []BasicEntry) (res []OmdbEntry) {
-	var err error
-
-	// get data from service for excerpted entries
+// RunPool starts a pool of threads to get data
+// from service for excerpted entries.
+func RunPool(list []BasicEntry) (res []OmdbEntry, err error) {
 	var ll = len(list)
 	var tn = cfg.ThreadsNum
 	if tn <= 0 {
@@ -98,6 +100,18 @@ func RunPool(list []BasicEntry) (res []OmdbEntry) {
 	}
 	var tres = make([][]OmdbEntry, tn)
 	log.Printf("starts %d threads to OMDb service\n", tn)
+
+	var cherr = make(chan error, tn)
+	var ctx, ctxfn = context.WithCancel(context.Background())
+	go func() {
+		defer ctxfn()
+		select {
+		case err = <-cherr:
+			return
+		case <-ctx.Done():
+			return
+		}
+	}()
 
 	var wg sync.WaitGroup
 	wg.Add(tn)
@@ -110,12 +124,22 @@ func RunPool(list []BasicEntry) (res []OmdbEntry) {
 			if i == tn-1 {
 				sl += ll % tn
 			}
-			if tres[i], err = QueryDB(list[i*in : i*in+sl]); err != nil {
-				log.Fatal(err)
+			if tres[i], err = QueryDB(ctx, list[i*in:i*in+sl]); err != nil {
+				select {
+				case <-ctx.Done():
+					return
+				case cherr <- err:
+					return
+				}
 			}
 		}()
 	}
 	wg.Wait()
+	close(cherr) // err will be guaranteed with expected value
+	<-ctx.Done() // wait until error goroutine exit
+	if err != nil {
+		return
+	}
 
 	for _, ires := range tres {
 		res = append(res, ires...)

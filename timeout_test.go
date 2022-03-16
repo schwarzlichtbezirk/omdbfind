@@ -12,9 +12,10 @@ const timeout_limit = 100 * time.Millisecond
 // timeout_diff is maximum difference between
 // real program running timeout and given limit.
 // it should be relative to OS timer granulation.
-// this test can fails in situation with memory swaping.
 const timeout_diff = 50 * time.Millisecond
 
+// TestTimeout tests limited by timeout program execution.
+// this test can fails in situation with memory swaping.
 func TestTimeout(t *testing.T) {
 	cfg.FilePath = "data.tsv"
 	cfg.MaxRunTime = timeout_limit

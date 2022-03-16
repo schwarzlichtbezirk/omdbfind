@@ -1,7 +1,7 @@
 @echo off
 cd /d %~dp0..
 rem puts version to file for docker image building
-git rev-parse --short HEAD > buildvers.txt
+git describe --tags > buildvers.txt
 set /p buildvers=<buildvers.txt
 set builddate="%date%"
 xcopy .\config %GOPATH%\bin\config /f /d /i /e /k /y

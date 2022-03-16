@@ -80,9 +80,9 @@ func DetectConfigPath() (retpath string, err error) {
 			return
 		}
 		// try to find relative from executable path
-		path = filepath.Join(exepath, path)
+		var exepath = filepath.Join(exepath, path)
 		if ok, _ = PathExists(filepath.Join(path, cfgfile)); ok {
-			retpath = path
+			retpath = exepath
 			return
 		}
 		log.Printf("no access to pointed configuration path '%s'\n", path)

@@ -9,6 +9,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// CfgOmdb is OMDb service API calls configuration.
 type CfgOmdb struct {
 	OmdbHost   string `json:"OMDb-host" yaml:"OMDb-host"`
 	ApiKey     string `json:"API-key" yaml:"API-key"`
@@ -16,6 +17,7 @@ type CfgOmdb struct {
 	ThreadsNum int    `json:"threads-num" yaml:"threads-num"`
 }
 
+// CfgPrint determines console output parameters.
 type CfgPrint struct {
 	NoBasicTable bool `json:"no-basic-table" yaml:"no-basic-table"`
 	NoOmdbTable  bool `json:"no-OMDb-table" yaml:"no-OMDb-table"`
@@ -23,24 +25,23 @@ type CfgPrint struct {
 	PlotLen      int  `json:"plot-len" yaml:"plot-len"`
 }
 
+// CfgSearch is search parameters for local database.
 type CfgSearch BasicEntry
 
 // Config is all settings union.
 type Config struct {
-	MaxRunTime      time.Duration `json:"maxRunTime,omitempty" yaml:"maxRunTime,omitempty"`
-	MaxRequests     int           `json:"maxRequests,omitempty" yaml:"maxRequests,omitempty"`
-	LineGranulation int           `json:"line-granulation" yaml:"line-granulation"`
-	PlotFilter      string        `json:"plotFilter,omitempty" yaml:"plotFilter,omitempty"`
-	CfgOmdb         `json:"OMDb-param" yaml:"OMDb-param"`
-	CfgSearch       `json:"search-param" yaml:"search-param"`
-	CfgPrint        `json:"print-param" yaml:"print-param"`
+	MaxRunTime  time.Duration `json:"maxRunTime,omitempty" yaml:"maxRunTime,omitempty"`
+	MaxRequests int           `json:"maxRequests,omitempty" yaml:"maxRequests,omitempty"`
+	PlotFilter  string        `json:"plotFilter,omitempty" yaml:"plotFilter,omitempty"`
+	CfgOmdb     `json:"OMDb-param" yaml:"OMDb-param"`
+	CfgSearch   `json:"search-param" yaml:"search-param"`
+	CfgPrint    `json:"print-param" yaml:"print-param"`
 }
 
 // Instance of settings with program default values.
 var cfg = Config{
-	MaxRunTime:      0,
-	MaxRequests:     100,
-	LineGranulation: 10,
+	MaxRunTime:  0,
+	MaxRequests: 100,
 	CfgOmdb: CfgOmdb{
 		OmdbHost:   "http://omdbapi.com",
 		ApiKey:     "124978f0",

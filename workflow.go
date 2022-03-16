@@ -120,7 +120,7 @@ func Run() {
 		// list of database entries thats passes search condition
 		var list []BasicEntry
 
-		if list, err = ReadDB(cfg.FilePath); err != nil {
+		if list, err = ReadDB(context.Background(), cfg.FilePath); err != nil {
 			log.Fatal(err)
 		}
 		PrintBasic(list)
@@ -132,7 +132,10 @@ func Run() {
 		default:
 		}
 
-		var res = RunPool(list)
+		var res []OmdbEntry
+		if res, err = RunPool(list); err != nil {
+			log.Fatal(err)
+		}
 		PrintOmdb(res)
 	}()
 }
@@ -149,4 +152,10 @@ func Done() {
 	var rundur = EndTime.Sub(StartTime)
 	log.Printf("time taken: %s\n", rundur.String())
 	log.Println("shutting down complete.")
+}
+
+func main() {
+	Init()
+	Run()
+	Done()
 }

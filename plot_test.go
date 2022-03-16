@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"testing"
 )
@@ -30,12 +31,14 @@ func doOmdb(t *testing.T, idtt []string) {
 		// list of database entries thats passes search condition
 		var list []BasicEntry
 
-		if list, err = ReadDB(cfg.FilePath); err != nil {
+		if list, err = ReadDB(context.Background(), cfg.FilePath); err != nil {
 			log.Fatal(err)
 		}
 		PrintBasic(list)
 
-		res = RunPool(list)
+		if res, err = RunPool(list); err != nil {
+			log.Fatal(err)
+		}
 		PrintOmdb(res)
 	}()
 

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"testing"
 )
@@ -28,7 +29,7 @@ func doQueueDB(b *testing.B, thrnum int) {
 	// list of database entries thats passes search condition
 	var list []BasicEntry
 
-	if list, err = ReadDB(cfg.FilePath); err != nil {
+	if list, err = ReadDB(context.Background(), cfg.FilePath); err != nil {
 		log.Fatal(err)
 	}
 	PrintBasic(list)
@@ -42,7 +43,10 @@ func doQueueDB(b *testing.B, thrnum int) {
 			defer exitwg.Done()
 			defer exitfn() // let's exit program on func will be complete
 
-			var res = RunPool(list)
+			var res []OmdbEntry
+			if res, err = RunPool(list); err != nil {
+				log.Fatal(err)
+			}
 			PrintOmdb(res)
 		}()
 
