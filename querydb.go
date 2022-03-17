@@ -7,7 +7,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"os"
 	"runtime"
 	"sync"
 )
@@ -145,27 +144,4 @@ func RunPool(list []BasicEntry) (res []OmdbEntry, err error) {
 		res = append(res, ires...)
 	}
 	return
-}
-
-func PrintOmdb(list []OmdbEntry) {
-	if len(list) == 0 {
-		log.Printf("no OMDb entries was found\n")
-		return
-	}
-
-	log.Printf("founded %d OMDb entries\n", len(list))
-	if !cfg.NoBasicTable {
-		fmt.Fprintf(os.Stdout, "IMDB_ID   | Title                            | Plot\n")
-		for _, v := range list {
-			var t = v.Title
-			if len(t) > cfg.TitleLen {
-				t = t[:cfg.TitleLen]
-			}
-			var p = v.Plot
-			if len(p) > cfg.PlotLen {
-				p = p[:cfg.PlotLen]
-			}
-			fmt.Fprintf(os.Stdout, "%9s | %-*s | %-*s\n", v.ImdbID, cfg.TitleLen, t, cfg.PlotLen, p)
-		}
-	}
 }

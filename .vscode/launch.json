@@ -9,7 +9,16 @@
 			"type": "go",
 			"request": "launch",
 			"mode": "auto",
-			"program": "${workspaceFolder}"
+			"program": "${workspaceFolder}",
+			"args": ["-filePath=data.tsv"]
+		},
+		{
+			"name": "Run debug",
+			"type": "go",
+			"request": "launch",
+			"mode": "auto",
+			"program": "${workspaceFolder}",
+			"args": ["-filePath=data-cuted.tsv"]
 		}
 	]
 }

@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"context"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -164,23 +163,4 @@ func ReadDB(ctx context.Context, dbname string) (list []BasicEntry, err error) {
 	}
 
 	return
-}
-
-func PrintBasic(list []BasicEntry) {
-	if len(list) == 0 {
-		log.Printf("no basic entries was found\n")
-		return
-	}
-
-	log.Printf("founded %d basic entries\n", len(list))
-	if !cfg.NoBasicTable {
-		fmt.Fprintf(os.Stdout, "IMDB_ID   | Title                            | Year | Genres\n")
-		for _, v := range list {
-			var t = v.PrimaryTitle
-			if len(t) > cfg.TitleLen {
-				t = t[:cfg.TitleLen]
-			}
-			fmt.Fprintf(os.Stdout, "%9s | %-*s | %d | %s\n", v.TConst, cfg.TitleLen, t, v.StartYear, v.Genres)
-		}
-	}
 }

@@ -43,6 +43,56 @@ search-param:
 print-param:
   # disables print of table with founded entries in local DB, print only its number.
   no-basic-table: false
+  # list of columns with its description for basic table output.
+  basic-table-info:
+    # draw border around of table
+    border: false
+    # draw grid inside of table
+    grid: true
+    # each element of list contains 3 fields: value, limit and margin.
+    # limit points to maximum length of fields, its cuts if exceeds.
+    # margin points to number of spaces on left and right, and can be 0.
+    # value can be one of the followed:
+    #   IMDB_ID (or tconst), titleType, Title (or primaryTitle),
+    #   originalTitle, isAdult, Year (or startYear), endYear,
+    #   Length (or runtimeMinutes), Genres (genres).
+    header:
+    - value: IMDB_ID
+      limit: 9
+      margin: 1
+    - value: Title
+      limit: 32
+      margin: 1
+    - value: Year
+      limit: 4
+      margin: 1
+    - value: Genres
+      limit: 0
+      margin: 1
+  # list of columns with its description for OMDb table output.
+  OMDb-table-info:
+    # draw border around of table
+    border: true
+    # draw grid inside of table
+    grid: true
+    # each element of list contains 3 fields: value, limit and margin.
+    # limit points to maximum length of fields, its cuts if exceeds.
+    # margin points to number of spaces on left and right, and can be 0.
+    # value can be one of the followed:
+    #   Title, Year, Rated, Released, Runtime, Genre, Director, Writer,
+    #   Actors, Plot, Language, Country, Awards, Poster, Metascore,
+    #   ImdbRating (imdbRating), ImdbVotes (imdbVotes), ImdbID (imdbID,
+    #   IMDB_ID, tconst), Type, DVD, BoxOffice, Production, Website, Response.
+    header:
+    - value: IMDB_ID
+      limit: 9
+      margin: 1
+    - value: Title
+      limit: 32
+      margin: 1
+    - value: Plot
+      limit: 120
+      margin: 1
   # disables print of table with full description provided by OMDb service.
   no-OMDb-table: false
   # maximum length of title in table.

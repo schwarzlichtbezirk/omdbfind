@@ -19,10 +19,12 @@ type CfgOmdb struct {
 
 // CfgPrint determines console output parameters.
 type CfgPrint struct {
-	NoBasicTable bool `json:"no-basic-table" yaml:"no-basic-table"`
-	NoOmdbTable  bool `json:"no-OMDb-table" yaml:"no-OMDb-table"`
-	TitleLen     int  `json:"title-len" yaml:"title-len"`
-	PlotLen      int  `json:"plot-len" yaml:"plot-len"`
+	NoBasicTable   bool      `json:"no-basic-table" yaml:"no-basic-table"`
+	BasicTableInfo TableInfo `json:"basic-table-info" yaml:"basic-table-info"`
+	NoOmdbTable    bool      `json:"no-OMDb-table" yaml:"no-OMDb-table"`
+	OmdbTableInfo  TableInfo `json:"OMDb-table-info" yaml:"OMDb-table-info"`
+	TitleLen       int       `json:"title-len" yaml:"title-len"`
+	PlotLen        int       `json:"plot-len" yaml:"plot-len"`
 }
 
 // CfgSearch is search parameters for local database.

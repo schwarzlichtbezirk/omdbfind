@@ -72,6 +72,8 @@ Search parameters:
 * `runtimeMinutes` - search by length of movie in minutes. If entry have no information about length in database, its pass this condition on all cases.
 * `genres` - search by genre or list of genres divided by comma. Search is case sensetive. If its given a list of genres for search, result passes for each entry if its list of genres contains any genre from condition.
 
+On local database postprocessing there is `plotFilter` filter that points on regular expression for search in `Plot` message.
+
 If it no search parameters provided, all database entries will be given as result.
 
 ---
