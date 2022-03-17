@@ -11,11 +11,13 @@ import (
 	"sync"
 )
 
+// Rating describes rating data returned by queries to OMDb service.
 type Rating struct {
 	Source string
 	Value  string
 }
 
+// OmdbEntry is movies description returned by queries to OMDb service.
 type OmdbEntry struct {
 	Title      string   `json:",omitempty" yaml:",omitempty"`
 	Year       string   `json:",omitempty" yaml:",omitempty"`

@@ -52,6 +52,7 @@ func Init() {
 	WaitExit()
 }
 
+// WaitExit starts goroutine to wait program termination.
 func WaitExit() {
 	// checks up command line parameters
 	if cfg.MaxRunTime != 0 {

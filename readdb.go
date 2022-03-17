@@ -23,7 +23,7 @@ const (
 	ci_genres
 )
 
-// BasicEntry is database line format.
+// BasicEntry is local database line format.
 type BasicEntry struct {
 	TConst         string `json:"tconst,omitempty" yaml:"tconst,omitempty"`
 	TitleType      string `json:"titleType,omitempty" yaml:"titleType,omitempty"`

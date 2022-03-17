@@ -95,7 +95,3 @@ print-param:
       margin: 1
   # disables print of table with full description provided by OMDb service.
   no-OMDb-table: false
-  # maximum length of title in table.
-  title-len: 32
-  # maximum length of plot in table.
-  plot-len: 120

@@ -23,8 +23,6 @@ type CfgPrint struct {
 	BasicTableInfo TableInfo `json:"basic-table-info" yaml:"basic-table-info"`
 	NoOmdbTable    bool      `json:"no-OMDb-table" yaml:"no-OMDb-table"`
 	OmdbTableInfo  TableInfo `json:"OMDb-table-info" yaml:"OMDb-table-info"`
-	TitleLen       int       `json:"title-len" yaml:"title-len"`
-	PlotLen        int       `json:"plot-len" yaml:"plot-len"`
 }
 
 // CfgSearch is search parameters for local database.
@@ -53,8 +51,6 @@ var cfg = Config{
 	CfgPrint: CfgPrint{
 		NoBasicTable: true,
 		NoOmdbTable:  true,
-		TitleLen:     32,
-		PlotLen:      32,
 	},
 }
 
