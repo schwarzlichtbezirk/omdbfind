@@ -11,10 +11,10 @@ import (
 
 // CfgOmdb is OMDb service API calls configuration.
 type CfgOmdb struct {
-	OmdbHost   string `json:"OMDb-host" yaml:"OMDb-host"`
-	ApiKey     string `json:"API-key" yaml:"API-key"`
-	FilePath   string `json:"filePath" yaml:"filePath"`
-	ThreadsNum int    `json:"threads-num" yaml:"threads-num"`
+	OmdbApiCall string `json:"OMDb-API-call" yaml:"OMDb-API-call"`
+	ApiKey      string `json:"API-key" yaml:"API-key"`
+	FilePath    string `json:"filePath" yaml:"filePath"`
+	ThreadsNum  int    `json:"threads-num" yaml:"threads-num"`
 }
 
 // CfgPrint determines console output parameters.
@@ -43,10 +43,10 @@ var cfg = Config{
 	MaxRunTime:  0,
 	MaxRequests: 100,
 	CfgOmdb: CfgOmdb{
-		OmdbHost:   "http://omdbapi.com",
-		ApiKey:     "124978f0",
-		FilePath:   "data-cuted.tsv",
-		ThreadsNum: 0,
+		OmdbApiCall: "http://omdbapi.com/?i=%s&apikey=%s",
+		ApiKey:      "124978f0",
+		FilePath:    "data-cuted.tsv",
+		ThreadsNum:  0,
 	},
 	CfgPrint: CfgPrint{
 		NoBasicTable: true,

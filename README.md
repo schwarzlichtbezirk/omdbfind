@@ -17,7 +17,7 @@ git clone https://github.com/schwarzlichtbezirk/omdbfind.git
 
 3. Download the file: `title.basics.tsv.gz` from [IMDB](https://datasets.imdbws.com/) and unpack it. Place unpacked file `data.tsv` to `github.com/schwarzlichtbezirk/omdbfind/config` path.
 
-4. Compile binaries on explicit OS system (Windows or Linux) by any `build.*` script at `tools` folder. Or build `Dockerfile`.
+4. Compile binaries on explicit OS system (Windows or Linux) by any `build.*` script at `task` folder. Or build `Dockerfile`.
 
 5. Run testes, or executable, or docker container.
 

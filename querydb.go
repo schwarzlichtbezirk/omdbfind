@@ -8,7 +8,8 @@ import (
 	"log"
 	"net/http"
 	"runtime"
-	"sync"
+
+	"golang.org/x/sync/errgroup"
 )
 
 // Rating describes rating data returned by queries to OMDb service.
@@ -50,7 +51,7 @@ type OmdbEntry struct {
 // Its a part of multithreaded pipeline.
 func QueryDB(ctx context.Context, list []BasicEntry) (res []OmdbEntry, err error) {
 	for _, be := range list {
-		var requri = fmt.Sprintf("%s/?i=%s&apikey=%s", cfg.OmdbHost, be.TConst, cfg.ApiKey)
+		var requri = fmt.Sprintf(cfg.OmdbApiCall, be.TConst, cfg.ApiKey)
 		var resp *http.Response
 		if resp, err = http.Get(requri); err != nil {
 			return
@@ -102,43 +103,20 @@ func RunPool(list []BasicEntry) (res []OmdbEntry, err error) {
 	var tres = make([][]OmdbEntry, tn)
 	log.Printf("starts %d threads to OMDb service\n", tn)
 
-	var cherr = make(chan error, tn)
-	var ctx, ctxfn = context.WithCancel(context.Background())
-	go func() {
-		defer ctxfn()
-		select {
-		case err = <-cherr:
-			return
-		case <-ctx.Done():
-			return
-		}
-	}()
-
-	var wg sync.WaitGroup
-	wg.Add(tn)
+	var wg, ctx = errgroup.WithContext(context.Background())
 	for i := 0; i < tn; i++ {
 		var i = i // localize
-		go func() {
-			defer wg.Done()
+		wg.Go(func() (err error) {
 			var in = ll / tn
 			var sl = in
 			if i == tn-1 {
 				sl += ll % tn
 			}
-			if tres[i], err = QueryDB(ctx, list[i*in:i*in+sl]); err != nil {
-				select {
-				case <-ctx.Done():
-					return
-				case cherr <- err:
-					return
-				}
-			}
-		}()
+			tres[i], err = QueryDB(ctx, list[i*in:i*in+sl])
+			return
+		})
 	}
-	wg.Wait()
-	close(cherr) // err will be guaranteed with expected value
-	<-ctx.Done() // wait until error goroutine exit
-	if err != nil {
+	if err = wg.Wait(); err != nil {
 		return
 	}
 

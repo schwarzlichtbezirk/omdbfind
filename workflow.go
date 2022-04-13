@@ -48,8 +48,6 @@ func Init() {
 	log.Printf("loaded '%s'\n", cfgfile)
 
 	flag.Parse()
-
-	WaitExit()
 }
 
 // WaitExit starts goroutine to wait program termination.
@@ -157,6 +155,7 @@ func Done() {
 
 func main() {
 	Init()
+	WaitExit()
 	Run()
 	Done()
 }

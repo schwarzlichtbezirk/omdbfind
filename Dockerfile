@@ -25,7 +25,7 @@ RUN go mod download
 COPY . .
 
 # Build service and put executable.
-RUN go build -o /go/bin/omdbfind -ldflags="-X 'main.buildvers=`cat buildvers.txt`' -X 'main.builddate=$(date +%F)'" .
+RUN go build -o /go/bin/omdbfind -ldflags="-X 'main.buildvers=`cat semver`' -X 'main.builddate=$(date +%F)'" .
 
 ##
 ## Deploy stage

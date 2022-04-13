@@ -10,7 +10,8 @@
 			"request": "launch",
 			"mode": "auto",
 			"program": "${workspaceFolder}",
-			"args": ["-filePath=data.tsv"]
+			"args": ["-filePath=data.tsv"],
+			"cwd": "${workspaceFolder}"
 		},
 		{
 			"name": "Run debug",
@@ -18,7 +19,8 @@
 			"request": "launch",
 			"mode": "auto",
 			"program": "${workspaceFolder}",
-			"args": ["-filePath=data-cuted.tsv"]
+			"args": ["-filePath=data-cuted.tsv"],
+			"cwd": "${workspaceFolder}"
 		}
 	]
 }
